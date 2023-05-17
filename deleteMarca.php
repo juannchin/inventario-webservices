@@ -6,9 +6,9 @@
 
     if($_SERVER['REQUEST_METHOD'] == 'POST')
 	{		
-		$sql = "CALL sp_eliminar_producto(:producto_id,:nuevo_estado)";
+		$sql = "CALL sp_eliminar_marca(:marca_id,:nuevo_estado)";
 		$stmt = $pdo->prepare($sql);
-		$stmt->bindValue(':producto_id', $_POST['producto_id']);
+		$stmt->bindValue(':marca_id', $_POST['marca_id']);
 		$stmt->bindValue(':nuevo_estado', $_POST['nuevo_estado']);
 		$stmt->execute();
 
