@@ -2,13 +2,13 @@
 include 'conexion.php';
 	
 $pdo = new Conexion();
-if($_SERVER['REQUEST_METHOD'] == 'GET')
+if($_SERVER['REQUEST_METHOD'] == 'POST')
 	{		
 		$sql = "CALL actualizar_marca (:marca_id,:nuevo_nombre,:nuevo_estado)";
 		$stmt = $pdo->prepare($sql);
-		$stmt->bindValue(':marca_id', $_GET['id']);
-		$stmt->bindValue(':nuevo_nombre', $_GET['nombre']);
-		$stmt->bindValue(':nuevo_estado', $_GET['estado']);
+		$stmt->bindValue(':marca_id', $_POST['id']);
+		$stmt->bindValue(':nuevo_nombre', $_POST['nombre']);
+		$stmt->bindValue(':nuevo_estado', $_POST['estado']);
 		$stmt->execute();
 		// Crear un arreglo con el mensaje de respuesta
 		$response = array(

@@ -25,7 +25,7 @@ if (curl_errno($ch)) {
 // Decodificar la respuesta JSON
 $data = json_decode($response);
 
-print_r($data);
+//print_r($data);
 
 // Validar el usuario y contraseña
 $encontrado = false;
@@ -47,7 +47,7 @@ if ($encontrado) {
     $_SESSION['usuario'] = $usuario;
 
     echo "<script>alert('Usuario Autenticado ".$usuario."');</script>";
-    echo "<script>window.location.replace('prueba.php');</script>";
+    echo "<script>window.location.replace('inicio.php');</script>";
     // Realizar acciones adicionales o redirigir al usuario a otra página
 
 } else {

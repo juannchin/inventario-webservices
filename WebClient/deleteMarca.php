@@ -1,30 +1,58 @@
+
 <?php
-	include'conexion.php';
-	
-	$pdo = new Conexion();
+
+    include 'includes/header.php';
+
+    if (isset($_GET['id'])) {
+
+        $id = $_GET['id'];
+
+        $apiurl = 'http://192.168.0.109/WS/listarMarcas.php';
+        $jsonData = file_get_contents($apiurl);
+
+        $marcas = json_decode($jsonData, true);
+
+        foreach ($marcas as $marc) {
+
+            if ($marc['id'] === $id) {
+                $marca = $marc['nombre'];
+                $estado = $marc['estado'];
+                break;
+            }
+        }  
 
 
-    if($_SERVER['REQUEST_METHOD'] == 'POST')
-	{		
-		$sql = "CALL sp_eliminar_marca(:id,:estado)";
-		$stmt = $pdo->prepare($sql);
-		$stmt->bindValue(':id', $_POST['id']);
-		$stmt->bindValue(':estado', $_POST['estado']);
-		$stmt->execute();
 
-	// Crear un arreglo con el mensaje de respuesta
-    $response = array(
-        "message" => "Registro eliminado"
-    );
-	
-    // Convertir el arreglo a JSON
-    $json_response = json_encode($response);
+        // URL del endpoint del servicio API/REST
+        $url = "http://192.168.0.109/WS/deleteMarca.php";
 
-    // Establecer las cabeceras de la respuesta como JSON
-    header('Content-Type: application/json');
+        // Datos a enviar en la solicitud PUT
+        $data = array(
+            'marca_id' => $id,
+            'nuevo_estado' => 0
+        );
 
-    // Imprimir el JSON como respuesta
-    echo $json_response;
-    exit;
-		
-	}
+        // Configurar opciones de la solicitud HTTP
+        $options = array(
+            'http' => array(
+                'header'  => "Content-Type: application/x-www-form-urlencoded\r\n",
+                'method'  => 'POST',
+                'content' => http_build_query($data)
+            )
+        );
+
+        // Crear contexto de la solicitud HTTP
+        $context = stream_context_create($options);
+
+        // Realizar la solicitud PUT al servicio API/REST
+        $result = file_get_contents($url, false, $context);
+
+        // Verificar si la solicitud fue exitosa
+        if ($result !== false) {
+            echo "<script>alert('Marca desactivada exitosamente.');</script>";
+        } else {
+            echo "<script>alert('Error al desactivar la marca.');</script>";
+        }
+        echo "<script>window.location.replace('marca.php');</script>";
+    }
+?>

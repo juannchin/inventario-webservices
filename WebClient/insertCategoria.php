@@ -13,21 +13,15 @@
 		$stmt->execute();
     	$idPost = $pdo->lastInsertId(); 
 
-		// Crear un arreglo con el mensaje de respuesta
-		$response = array(
-			"message" => "Registro almacenado"
-		);
-	
-		// Convertir el arreglo a JSON
-		$json_response = json_encode($response);
-	
-		// Establecer las cabeceras de la respuesta como JSON
-		header('Content-Type: application/json');
-	
-		// Imprimir el JSON como respuesta
-		echo $json_response;
-		exit;
-
+		if ($idPost) {
+			$response = array('message' => 'Datos almacenados');
+			$jsonResponse = json_encode($response);
+			header('Content-Type: application/json');
+			echo $jsonResponse;
+			
+			exit;
+		}
+		header("Location:categoria.php");
 	}
 
 

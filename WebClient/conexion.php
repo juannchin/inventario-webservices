@@ -3,7 +3,7 @@ class conexion extends PDO{
     private $host = "localhost";
     private $user = "root";
     private $password = "";
-    private $database = "bdarreglada2";
+    private $database = "db_inventario";
 
     public function __construct()
     {
@@ -11,13 +11,17 @@ class conexion extends PDO{
         try{
             parent::__construct('mysql:host=' . $this->host . ';dbname=' . $this->database . ';charset=utf8', $this->user, $this->password, array(PDO::ATTR_ERRMODE => PDO :: ERRMODE_EXCEPTION));
 
-        }catch(PDOException $e){
+        }catch(PDOException $m){
 
-            echo 'Error al conectar: '. $e ->getMessage();
+            echo 'Error: '. $m ->getMessage();
             exit;
 
         }
 
     }
+
+
+
 }
+
 ?>

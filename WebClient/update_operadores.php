@@ -2,14 +2,14 @@
 include 'conexion.php';
 	
 $pdo = new Conexion();
-if($_SERVER['REQUEST_METHOD'] == 'GET')
+if($_SERVER['REQUEST_METHOD'] == 'POST')
 	{		
 		$sql = "CALL actualizar_operador (:p_id,:p_usuario,:p_pass,:p_estado)";
 		$stmt = $pdo->prepare($sql);
-		$stmt->bindValue(':p_id', $_GET['id']);
-		$stmt->bindValue(':p_usuario', $_GET['usuario']);
-		$stmt->bindValue(':p_pass', $_GET['pass']);
-		$stmt->bindValue(':p_estado', $_GET['estado']);
+		$stmt->bindValue(':p_id', $_POST['id']);
+		$stmt->bindValue(':p_usuario', $_POST['usuario']);
+		$stmt->bindValue(':p_pass', $_POST['pass']);
+		$stmt->bindValue(':p_estado', $_POST['estado']);
 		$stmt->execute();
 		// Crear un arreglo con el mensaje de respuesta
 		$response = array(

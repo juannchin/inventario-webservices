@@ -1,63 +1,41 @@
 <?php
-include 'conexion.php';
 
-$pdo = new conexion();
-
-
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-	$sql = "CALL insertar_marca(:nombre, :estado)";
-	$stmt = $pdo->prepare($sql);
-	$stmt->bindValue(':nombre', $_POST['nombre']);
-	$stmt->bindValue(':estado', $_POST['estado']);
-	$stmt->execute();
-	$idPost = $pdo->lastInsertId();
-	// Crear un arreglo con el mensaje de respuesta
-	$response = array(
-		"message" => "Registro almacenado"
-	);
-
-	// Convertir el arreglo a JSON
-	$json_response = json_encode($response);
-
-	// Establecer las cabeceras de la respuesta como JSON
-	header('Content-Type: application/json');
-
-	// Imprimir el JSON como respuesta
-	echo $json_response;
-	exit;
-}
-
-$nombre = $_POST['nombre'];
-
-// Verificar si se proporcionó un nombre
-if (!empty($nombre)) {
-	// Procesar los datos y generar una respuesta exitosa
-	$mensaje = "¡Hola, " . $nombre . "! Bienvenido al Web Service.";
-	$response = array('mensaje' => $mensaje);
-} else {
-	// Generar una respuesta de error si no se proporcionó un nombre
-	$mensaje = "No se proporcionó un nombre válido.";
-	$response = array('error' => $mensaje);
-}
-
-// Devolver la respuesta en formato JSON
-header('Content-Type: application/json');
-echo json_encode($response);
-
+// Datos de la marca y estado a enviar
+$marca = $_POST['nombre'];
 $estado = $_POST['estado'];
 
-// Verificar si se proporcionó un nombre
-if (!empty($estado)) {
-	// Procesar los datos y generar una respuesta exitosa
-	$mensaje = "¡Hola, " . $nombre . "! Bienvenido al Web Service.";
-	$response = array('mensaje' => $mensaje);
+// URL del endpoint del servicio API/REST
+$url = "http://192.168.0.109/WS/insertMarca.php";
+
+// Datos a enviar en la solicitud POST
+$data = array(
+    'nombre' => $marca,
+    'estado' => $estado
+);
+
+// Configurar opciones de la solicitud HTTP
+$options = array(
+    'http' => array(
+        'header'  => "Content-Type: application/x-www-form-urlencoded\r\n",
+        'method'  => 'POST',
+        'content' => http_build_query($data)
+    )
+);
+
+// Crear contexto de la solicitud HTTP
+$context = stream_context_create($options);
+
+// Realizar la solicitud POST al servicio API/REST
+$result = file_get_contents($url, false, $context);
+
+
+// Verificar si la solicitud fue exitosa
+if ($result !== false) {
+	echo "<script>alert('Marca agregada exitosamente.');</script>";
 } else {
-	// Generar una respuesta de error si no se proporcionó un nombre
-	$mensaje = "No se proporcionó un nombre válido.";
-	$response = array('error' => $mensaje);
+	echo "<script>alert('Error al actualizar la marca.');</script>";
 }
 
-// Devolver la respuesta en formato JSON
-header('Content-Type: application/json');
-echo json_encode($response);
+echo "<script>window.location.replace('marca.php');</script>";
+
 ?>

@@ -25,6 +25,7 @@
 
     // Imprimir el JSON como respuesta
     echo $json_response;
+    header("location:categoria.php");
     exit;
 		
 	}
