@@ -5,6 +5,8 @@
 </head>
 <body>
     <?php
+    include 'sesion.php';
+
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Obtener los datos del formulario
         $nombre = $_POST['nombre'];
