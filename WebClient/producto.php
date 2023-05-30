@@ -1,17 +1,17 @@
 <?php
-    include 'includes/header.php';
+include 'includes/header.php';
 ?>
-    <br><br>
-    <div id="main">
-        <div>
-        <form action="http://192.168.0.109/WS/insertProducto.php" method="POST">
+<br><br>
+<div id="main">
+    <div>
+        <form action="insertProducto.php" method="POST">
             &nbsp;&nbsp;<label>Nombre</label>&nbsp;&nbsp;&nbsp;&nbsp;
             <input id="nombre" name="nombre" type="text" class="textbox"
                 placeholder="Ingrese su nombre">&nbsp;&nbsp;&nbsp;&nbsp;
-            <label>Categoria</label>&nbsp;&nbsp;&nbsp;&nbsp;
+            <label>ID Categoria</label>&nbsp;&nbsp;&nbsp;&nbsp;
             <input id="id_categoria" name="id_categoria" type="text" class="textbox"
                 placeholder="Ingrese Categoria"><br><br>
-            &nbsp;&nbsp;<label>Marca</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            &nbsp;&nbsp;<label>ID Marca</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             <input id="id_marca" name="id_marca" type="text" class="textbox"
                 placeholder="Ingrese marca">&nbsp;&nbsp;&nbsp;&nbsp;
             <label>Cantidad</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -23,8 +23,7 @@
             <input id="caducidad" name="caducidad" type="date" class="textbox"
                 placeholder="Ingrese fecha caducidad">&nbsp;&nbsp;&nbsp;
             <label>Estado</label>&nbsp;&nbsp;&nbsp;&nbsp;
-            <input id="estado" name="estado" type="text" class="textbox"
-                placeholder="Ingrese estado"><br>
+            <input id="estado" name="estado" type="text" class="textbox" placeholder="Ingrese estado"><br>
             <br>
 
             <br>&nbsp;&nbsp;<button class="btn-agregar">Agregar</button>
@@ -103,8 +102,10 @@
                                 ?>
                             </td>
                             <td>
-                                <button id="Editar" type="submit" class="btn-agregar"><a href="FormUpdateProducto.php">Editar</a></button>
-                                <button type="submit" class="btn-agregar"><a href="FormDeleteProducto.php">eliminar</a></button>
+                                <button id="Editar" type="submit" class="btn-agregar"><a class="btn-agregar"
+                                        href="FormUpdateProducto.php?id=<?php echo $producto['id']; ?>">Editar</a></button>
+                                <button type="submit" class="btn-agregar"><a class="btn-agregar"
+                                        href="deleteProducto.php?id=<?php echo $producto['id']; ?>">Desactivar</a></button>
                             </td>
                         </tr>
                         <?php

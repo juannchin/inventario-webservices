@@ -1,4 +1,3 @@
-
 <?php
 
     include 'includes/header.php';
@@ -20,8 +19,6 @@
                 break;
             }
         }  
-
-
 
         // URL del endpoint del servicio API/REST
         $url = "http://192.168.0.109/WS/deleteMarca.php";
