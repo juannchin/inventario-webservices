@@ -1,5 +1,18 @@
 <?php
 include 'includes/header.php';
+
+    $apiurl = 'http://192.168.0.109/WS/listarProductos.php';
+    $marcasurl = 'http://192.168.0.109/WS/listarMarcas.php';
+    $catsurl = 'http://192.168.0.109/WS/listarCategorias.php';
+
+    $jsonData = file_get_contents($apiurl);
+    $jsonMarcas = file_get_contents($marcasurl);
+    $jsonCategorias = file_get_contents($catsurl);
+
+    $productos = json_decode($jsonData, true);
+    $marcas = json_decode($jsonMarcas, true);
+    $categorias = json_decode($jsonCategorias, true);
+
 ?>
 <br><br>
 <div id="main">
@@ -7,13 +20,29 @@ include 'includes/header.php';
         <form action="insertProducto.php" method="POST">
             &nbsp;&nbsp;<label>Nombre</label>&nbsp;&nbsp;&nbsp;&nbsp;
             <input id="nombre" name="nombre" type="text" class="textbox"
-                placeholder="Ingrese su nombre">&nbsp;&nbsp;&nbsp;&nbsp;
-            <label>ID Categoria</label>&nbsp;&nbsp;&nbsp;&nbsp;
-            <input id="id_categoria" name="id_categoria" type="text" class="textbox"
-                placeholder="Ingrese Categoria"><br><br>
-            &nbsp;&nbsp;<label>ID Marca</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <input id="id_marca" name="id_marca" type="text" class="textbox"
-                placeholder="Ingrese marca">&nbsp;&nbsp;&nbsp;&nbsp;
+                placeholder="Ingrese su nombre">&nbsp;&nbsp;&nbsp;&nbsp;<br /><br />
+
+            <label>Categoria</label>&nbsp;&nbsp;&nbsp;&nbsp;
+            <select name="id_categoria">            
+            <?php
+                foreach ($categorias as $categoria):
+            ?>
+                    <option value="<?php echo $categoria['id']; ?>"><?php echo $categoria['nombre']; ?></option>
+            <?php
+                endforeach;
+            ?>
+            </select><br /><br />
+            <label>Marca</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <select name="id_marca">
+            <?php
+            foreach ($marcas as $marca):
+            ?>
+                <option value="<?php echo $marca['id']; ?>"><?php echo $marca['nombre']; ?></option>
+            <?php
+                endforeach;
+            ?>
+            </select><br /><br />
+            
             <label>Cantidad</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             <input id="cantidad" name="cantidad" type="text" class="textbox" placeholder="Ingrese Cantidad"><br><br>
             &nbsp;&nbsp;<label>Valor</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -32,11 +61,7 @@ include 'includes/header.php';
     </form>
     <br>
     <br>
-    <?php
-    $apiurl = 'http://192.168.0.109/WS/listarProductos.php';
-    $jsonData = file_get_contents($apiurl);
-
-    $productos = json_decode($jsonData, true);
+    
     ?>
     <div>
         <center>
