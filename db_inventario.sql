@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 25-05-2023 a las 04:43:18
+-- Tiempo de generación: 08-06-2023 a las 06:27:04
 -- Versión del servidor: 10.4.6-MariaDB
 -- Versión de PHP: 7.1.32
 
@@ -94,7 +94,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `listar_operadores` ()  BEGIN
 END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `listar_productos` ()  BEGIN
-  SELECT p.id, p.nombre as nombre, c.nombre as categoria, m.nombre as marca, p.cantidad, p.valor, p.caducidad
+  SELECT p.id, p.nombre as nombre, c.nombre as categoria, m.nombre as marca, p.cantidad, p.valor, p.caducidad,  p.id_categoria, p.id_marca
   FROM productos p
   INNER JOIN categorias c ON p.id_categoria = c.id
   INNER JOIN marcas m ON p.id_marca = m.id
@@ -148,7 +148,15 @@ CREATE TABLE `categorias` (
 --
 
 INSERT INTO `categorias` (`id`, `nombre`, `estado`) VALUES
-(1, 'Jabones', 1);
+(1, 'Jabones', 1),
+(6, 'Medicinas', 1),
+(7, 'HOLA', 0),
+(8, 'toallas2', 0),
+(9, 'JuanPRUEBA3', 0),
+(10, 'JuanPRUEBA8', 0),
+(11, 'JuanPRUEBA9', 0),
+(12, 'JuanGARAY1', 0),
+(13, 'Pasta dental', 1);
 
 -- --------------------------------------------------------
 
@@ -167,7 +175,23 @@ CREATE TABLE `marcas` (
 --
 
 INSERT INTO `marcas` (`id`, `nombre`, `estado`) VALUES
-(1, 'MAXI ESPUMA', 1);
+(1, 'MAXI ESPUMA', 0),
+(12, 'BUDINES', 0),
+(13, 'MARQUESOTE', 0),
+(14, 'GUCCI2', 0),
+(15, 'Protex2', 0),
+(18, 'JuanPRUEBA1', 0),
+(19, 'JuanPRUEBA3', 0),
+(20, 'JuanPRUEBA4', 0),
+(21, 'JuanPRUEBA4', 0),
+(22, 'JuanPRUEBA9', 0),
+(23, 'JuanPRUEBA1', 0),
+(24, 'dsededed', 0),
+(25, 'MarcaPrueba', 0),
+(26, 'JuanGARAY', 0),
+(27, 'Colgate', 1),
+(28, 'Colgat', 3),
+(29, 'Xiaomi', 1);
 
 -- --------------------------------------------------------
 
@@ -187,7 +211,11 @@ CREATE TABLE `operadores` (
 --
 
 INSERT INTO `operadores` (`id`, `usuario`, `pass`, `estado`) VALUES
-(1, 'maddie', '1234', 1);
+(1, 'maddie', '1234', 1),
+(2, 'nicole', 'admin', 1),
+(3, 'juan', '123', 1),
+(4, 'gerardo', '123', 1),
+(5, 'Carlos', '123', 1);
 
 -- --------------------------------------------------------
 
@@ -211,7 +239,19 @@ CREATE TABLE `productos` (
 --
 
 INSERT INTO `productos` (`id`, `nombre`, `id_categoria`, `id_marca`, `cantidad`, `valor`, `caducidad`, `estado`) VALUES
-(1, 'Japon de lavar', 1, 1, 12, 13.6, '2023-05-11', 1);
+(1, 'Japon de lavar', 1, 1, 12, 13.6, '2023-05-11', 1),
+(33, 'Shampoo3', 6, 1, 4, 5.6, '2023-06-22', 0),
+(34, 'ProductoJuan1', 6, 1, 100, 5, '2023-06-30', 1),
+(35, 'JuanGARAY2', 6, 1, 200, 50, '2024-02-28', 0),
+(36, 'Toalla', 8, 14, 23, 15, '2023-11-29', 0),
+(37, 'ToallaGARAY', 8, 14, 23, 15, '2023-11-29', 0),
+(38, 'Televisor 65 pulgadas', 1, 13, 17, 800, '2023-07-20', 0),
+(39, 'JuanPRUEBA8', 6, 14, 101, 51, '2023-09-29', 0),
+(40, 'JuanPRUEBA8', 6, 14, 101, 51, '2023-09-29', 0),
+(41, 'Javon Juan', 1, 1, 23, 5, '2023-12-31', 1),
+(42, 'Protex', 1, 27, 20, 8.75, '2023-08-24', 1),
+(45, 'Full fresh', 1, 1, 100, 3.25, '2021-06-17', 1),
+(46, 'Full fresh', 1, 1, 100, 3.25, '2021-06-17', 1);
 
 --
 -- Índices para tablas volcadas
@@ -251,25 +291,25 @@ ALTER TABLE `productos`
 -- AUTO_INCREMENT de la tabla `categorias`
 --
 ALTER TABLE `categorias`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT de la tabla `marcas`
 --
 ALTER TABLE `marcas`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
 
 --
 -- AUTO_INCREMENT de la tabla `operadores`
 --
 ALTER TABLE `operadores`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT de la tabla `productos`
 --
 ALTER TABLE `productos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=47;
 
 --
 -- Restricciones para tablas volcadas

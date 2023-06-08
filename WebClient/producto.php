@@ -62,7 +62,7 @@ include 'includes/header.php';
     <br>
     <br>
     
-    ?>
+
     <div>
         <center>
             <table class="table">
