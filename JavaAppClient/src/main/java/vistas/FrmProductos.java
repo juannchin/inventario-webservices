@@ -12,7 +12,9 @@ import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 import javax.swing.event.ListSelectionEvent;
@@ -46,14 +48,101 @@ public class FrmProductos extends javax.swing.JFrame {
         cargarDatos();
 
         this.setLocationRelativeTo(null);
+
+    }
+
+// Método para obtener la lista de marcas desde la API
+    public Map<String, Integer> obtenerMarcas() {
+        Map<String, Integer> marcas = new HashMap<>();
+
+        try {
+            // Establecer la URL de la API de listarMarcas
+            URL url = new URL("http://localhost/WS/listarMarcas.php");
+
+            // Realizar la conexión HTTP GET
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("GET");
+
+            // Leer la respuesta JSON
+            BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            String line;
+            StringBuilder response = new StringBuilder();
+            while ((line = reader.readLine()) != null) {
+                response.append(line);
+            }
+            reader.close();
+
+            // Parsear la respuesta JSON y obtener las categorías
+            JSONArray jsonArray = new JSONArray(response.toString());
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                int id = jsonObject.getInt("id");
+                String nombre = jsonObject.getString("nombre");
+                marcas.put(nombre, id);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return marcas;
+    }
+
+    public Map<String, Integer> obtenerCategorias() {
+        Map<String, Integer> categorias = new HashMap<>();
+
+        try {
+            // Establecer la URL de la API de listarCategorias
+            URL url = new URL("http://localhost/WS/listarCategorias.php");
+
+            // Realizar la conexión HTTP GET
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("GET");
+
+            // Leer la respuesta JSON
+            BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            String line;
+            StringBuilder response = new StringBuilder();
+            while ((line = reader.readLine()) != null) {
+                response.append(line);
+            }
+            reader.close();
+
+            // Parsear la respuesta JSON y obtener las categorías
+            JSONArray jsonArray = new JSONArray(response.toString());
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                int id = jsonObject.getInt("id");
+                String nombre = jsonObject.getString("nombre");
+                categorias.put(nombre, id);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return categorias;
     }
 
     private void cargarDatos() {
 
         try {
 
+            // Obtener las marcas y categorías
+            Map<String, Integer> categorias = obtenerCategorias();
+            Map<String, Integer> marcas = obtenerMarcas();
+
+            // Llenar el ComboBox de categorías
+            for (Map.Entry<String, Integer> entry : categorias.entrySet()) {
+                String nombreCategoria = entry.getKey();
+                comboCategorias.addItem(nombreCategoria);
+            }
+
+            for (Map.Entry<String, Integer> entry : marcas.entrySet()) {
+                String nombreMarca = entry.getKey();
+                comboMarcas.addItem(nombreMarca);
+            }
+
             // Establecer la URL de la API
-            URL url = new URL("http://192.168.0.109/WS/listarProductos.php");
+            URL url = new URL("http://localhost/WS/listarProductos.php");
 
             // Realizar la conexión HTTP
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -84,12 +173,12 @@ public class FrmProductos extends javax.swing.JFrame {
             // Llenar el modelo de tabla con los datos del JSON
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
-                int id = jsonObject.getInt("id");
+                String id = jsonObject.getString("id");
                 String nombre = jsonObject.getString("nombre");
                 String categoria = jsonObject.getString("categoria");
                 String marca = jsonObject.getString("marca");
-                int cantidad = jsonObject.getInt("cantidad");
-                float valor = jsonObject.getFloat("valor");
+                String cantidad = jsonObject.getString("cantidad");
+                String valor = jsonObject.getString("valor");
                 String caducidad = jsonObject.getString("caducidad");
 
                 tableModel.addRow(new Object[]{id, nombre, categoria, marca, cantidad, valor, caducidad});
@@ -115,10 +204,14 @@ public class FrmProductos extends javax.swing.JFrame {
                         // Mostrar los datos en los campos de texto
                         idTxt.setText(id);
                         nombreTxt.setText(nombre);
-                        CategoriaTxt.setText(categoria);
-                        MarcaTxt.setText(marca);
                         cantidadTxt.setText(cantidad);
                         valorTxt.setText(valor);
+
+                        // Seleccionar el valor correcto en el ComboBox de categoría
+                        comboCategorias.setSelectedItem(categoria);
+
+                        // Seleccionar el valor correcto en el ComboBox de marca
+                        comboMarcas.setSelectedItem(marca);
 
                         try {
                             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -144,7 +237,7 @@ public class FrmProductos extends javax.swing.JFrame {
      * regenerated by the Form Editor.
      */
     @SuppressWarnings("unchecked")
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">                          
     private void initComponents() {
 
         bg = new javax.swing.JPanel();
@@ -169,9 +262,9 @@ public class FrmProductos extends javax.swing.JFrame {
         btnInsertar = new javax.swing.JButton();
         btnActualizar = new javax.swing.JButton();
         btnEliminar = new javax.swing.JButton();
-        CategoriaTxt = new javax.swing.JTextField();
-        MarcaTxt = new javax.swing.JTextField();
         btnLimpiar = new javax.swing.JButton();
+        comboCategorias = new javax.swing.JComboBox<>();
+        comboMarcas = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setLocationByPlatform(true);
@@ -271,6 +364,10 @@ public class FrmProductos extends javax.swing.JFrame {
             }
         });
 
+        comboCategorias.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Seleccione una categoria" }));
+
+        comboMarcas.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Seleccione una marca" }));
+
         javax.swing.GroupLayout bgLayout = new javax.swing.GroupLayout(bg);
         bg.setLayout(bgLayout);
         bgLayout.setHorizontalGroup(
@@ -298,10 +395,11 @@ public class FrmProductos extends javax.swing.JFrame {
                                     .addComponent(jLabel4)
                                     .addComponent(jLabel8))
                                 .addGap(20, 20, 20)
-                                .addGroup(bgLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(CategoriaTxt)
-                                    .addComponent(nombreTxt)
-                                    .addComponent(MarcaTxt, javax.swing.GroupLayout.DEFAULT_SIZE, 190, Short.MAX_VALUE))
+                                .addGroup(bgLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(nombreTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGroup(bgLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                        .addComponent(comboMarcas, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(comboCategorias, javax.swing.GroupLayout.Alignment.LEADING, 0, 170, Short.MAX_VALUE)))
                                 .addGap(95, 95, 95)
                                 .addGroup(bgLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(bgLayout.createSequentialGroup()
@@ -348,7 +446,7 @@ public class FrmProductos extends javax.swing.JFrame {
                     .addComponent(jLabel5)
                     .addComponent(jLabel7)
                     .addComponent(valorTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(CategoriaTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(comboCategorias, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(bgLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(bgLayout.createSequentialGroup()
@@ -360,7 +458,7 @@ public class FrmProductos extends javax.swing.JFrame {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, bgLayout.createSequentialGroup()
                                 .addGap(0, 0, Short.MAX_VALUE)
-                                .addComponent(MarcaTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(comboMarcas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(40, 40, 40)))
                         .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 280, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
@@ -389,15 +487,17 @@ public class FrmProductos extends javax.swing.JFrame {
         );
 
         pack();
-    }// </editor-fold>//GEN-END:initComponents
+    }// </editor-fold>                        
 
 
-    private void btnInsertarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInsertarActionPerformed
+    private void btnInsertarActionPerformed(java.awt.event.ActionEvent evt) {                                            
 
         // Obtener los valores de los campos de texto para insertar
         String nombre = nombreTxt.getText();
-        String categoria = CategoriaTxt.getText();
-        String marca = MarcaTxt.getText();
+        String categoriaSeleccionada = comboCategorias.getSelectedItem().toString();
+        int idCategoriaSeleccionada = obtenerCategorias().get(categoriaSeleccionada);
+        String marcaSeleccionada = comboMarcas.getSelectedItem().toString();
+        int idMarcaSeleccionada = obtenerMarcas().get(marcaSeleccionada);
         String cantidad = cantidadTxt.getText();
         String valor = valorTxt.getText();
         Date caducidadDate = CaducidadDate.getDate();
@@ -407,14 +507,14 @@ public class FrmProductos extends javax.swing.JFrame {
 
         // Crear la solicitud HTTP POST
         HttpClient httpClient = HttpClientBuilder.create().build();
-        HttpPost httpPost = new HttpPost("http://192.168.0.109/WS/insertProducto.php");
+        HttpPost httpPost = new HttpPost("http://localhost/WS/insertProducto.php");
 
         try {
             // Agregar los parámetros de la solicitud POST
             List<NameValuePair> params = new ArrayList<>();
             params.add(new BasicNameValuePair("nombre", nombre));
-            params.add(new BasicNameValuePair("id_categoria", categoria));
-            params.add(new BasicNameValuePair("id_marca", marca));
+            params.add(new BasicNameValuePair("id_categoria", String.valueOf(idCategoriaSeleccionada)));
+            params.add(new BasicNameValuePair("id_marca", String.valueOf(idMarcaSeleccionada)));
             params.add(new BasicNameValuePair("cantidad", cantidad));
             params.add(new BasicNameValuePair("valor", valor));
             params.add(new BasicNameValuePair("caducidad", caducidad));
@@ -429,24 +529,35 @@ public class FrmProductos extends javax.swing.JFrame {
             // Procesar la respuesta
             System.out.println(jsonResponse);
             cargarDatos();
+            //Vaciar los campos
+            idTxt.setText("");
+            nombreTxt.setText("");
+            cantidadTxt.setText("");
+            valorTxt.setText("");
+            CaducidadDate.setDate(null);
+            comboCategorias.setSelectedItem("Seleccione una categoria");
+            comboMarcas.setSelectedItem("Seleccione una marca");
+
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }//GEN-LAST:event_btnInsertarActionPerformed
+    }                                           
 
-    private void btnRegresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegresarActionPerformed
+    private void btnRegresarActionPerformed(java.awt.event.ActionEvent evt) {                                            
         Dashboard vista = new Dashboard();
         vista.setVisible(true);
         dispose();
-    }//GEN-LAST:event_btnRegresarActionPerformed
+    }                                           
 
-    private void btnActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActualizarActionPerformed
+    private void btnActualizarActionPerformed(java.awt.event.ActionEvent evt) {                                              
 
         // Obtener los valores actualizados de los campos de texto
         String productoId = idTxt.getText();
         String nuevoNombre = nombreTxt.getText();
-        String nuevaCategoriaId = CategoriaTxt.getText();
-        String nuevaMarcaId = MarcaTxt.getText();
+        String categoriaSeleccionada = comboCategorias.getSelectedItem().toString();
+        int idCategoriaSeleccionada = obtenerCategorias().get(categoriaSeleccionada);
+        String marcaSeleccionada = comboMarcas.getSelectedItem().toString();
+        int idMarcaSeleccionada = obtenerMarcas().get(marcaSeleccionada);
         String nuevaCantidad = cantidadTxt.getText();
         String nuevoValor = valorTxt.getText();
         Date nuevaCaducidadDate = CaducidadDate.getDate();
@@ -456,7 +567,7 @@ public class FrmProductos extends javax.swing.JFrame {
 
         // Crear la solicitud HTTP POST
         HttpClient httpClient = HttpClientBuilder.create().build();
-        HttpPost httpPost = new HttpPost("http://192.168.0.109/WS/updateProducto.php");
+        HttpPost httpPost = new HttpPost("http://localhost/WS/updateProducto.php");
 
         try {
 
@@ -464,8 +575,8 @@ public class FrmProductos extends javax.swing.JFrame {
             List<NameValuePair> params = new ArrayList<>();
             params.add(new BasicNameValuePair("id", productoId));
             params.add(new BasicNameValuePair("nombre", nuevoNombre));
-            params.add(new BasicNameValuePair("id_categoria", nuevaCategoriaId));
-            params.add(new BasicNameValuePair("id_marca", nuevaMarcaId));
+            params.add(new BasicNameValuePair("id_categoria", String.valueOf(idCategoriaSeleccionada)));
+            params.add(new BasicNameValuePair("id_marca", String.valueOf(idMarcaSeleccionada)));
             params.add(new BasicNameValuePair("cantidad", nuevaCantidad));
             params.add(new BasicNameValuePair("valor", nuevoValor));
             params.add(new BasicNameValuePair("caducidad", nuevaCaducidad));
@@ -480,36 +591,36 @@ public class FrmProductos extends javax.swing.JFrame {
             // Procesar la respuesta
             System.out.println(jsonResponse);
             cargarDatos();
-            //vacia los TextField
+            //Vaciar los campos
             idTxt.setText("");
             nombreTxt.setText("");
-            CategoriaTxt.setText("");
-            MarcaTxt.setText("");
             cantidadTxt.setText("");
             valorTxt.setText("");
             CaducidadDate.setDate(null);
+            comboCategorias.setSelectedItem("Seleccione una categoria");
+            comboMarcas.setSelectedItem("Seleccione una marca");
 
         } catch (Exception e) {
             e.printStackTrace();
         }
 
 
-    }//GEN-LAST:event_btnActualizarActionPerformed
+    }                                             
 
-    private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
+    private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {                                            
         // Obtener el ID del producto a eliminar
         String productoId = obtenerProductoIdSeleccionado();
 
         // Crear la solicitud HTTP POST
         HttpClient httpClient = HttpClientBuilder.create().build();
-        HttpPost request = new HttpPost("http://192.168.0.109/WS/deleteProducto.php");
+        HttpPost request = new HttpPost("http://localhost/WS/deleteProducto.php");
 
         try {
 
             // Agregar los parámetros de la solicitud POST
             List<NameValuePair> params = new ArrayList<>();
             params.add(new BasicNameValuePair("producto_id", productoId));
-            params.add(new BasicNameValuePair("nuevo_estado", "eliminado")); 
+            params.add(new BasicNameValuePair("nuevo_estado", "eliminado"));
             request.setEntity(new UrlEncodedFormEntity(params));
 
             // Ejecutar la solicitud HTTP POST
@@ -521,31 +632,31 @@ public class FrmProductos extends javax.swing.JFrame {
             JOptionPane.showConfirmDialog(this, "¿Esta seguro de eliminar?");
             System.out.println(jsonResponse);
             cargarDatos();
-            //vacia los TextFiel
+            //Vaciar los campos
             idTxt.setText("");
             nombreTxt.setText("");
-            CategoriaTxt.setText("");
-            MarcaTxt.setText("");
             cantidadTxt.setText("");
             valorTxt.setText("");
             CaducidadDate.setDate(null);
+            comboCategorias.setSelectedItem("Seleccione una categoria");
+            comboMarcas.setSelectedItem("Seleccione una marca");
 
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-    }//GEN-LAST:event_btnEliminarActionPerformed
+    }                                           
 
-    private void btnLimpiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimpiarActionPerformed
-        //vacia los TextFiel
+    private void btnLimpiarActionPerformed(java.awt.event.ActionEvent evt) {                                           
+        //Vaciar los campos
         idTxt.setText("");
         nombreTxt.setText("");
-        CategoriaTxt.setText("");
-        MarcaTxt.setText("");
         cantidadTxt.setText("");
         valorTxt.setText("");
         CaducidadDate.setDate(null);
-    }//GEN-LAST:event_btnLimpiarActionPerformed
+        comboCategorias.setSelectedItem("Seleccione una categoria");
+        comboMarcas.setSelectedItem("Seleccione una marca");
+    }                                          
 
     private String obtenerProductoIdSeleccionado() {
         // Obtener el ID del producto seleccionado en la tabla
@@ -597,10 +708,8 @@ public class FrmProductos extends javax.swing.JFrame {
         });
     }
 
-    // Variables declaration - do not modify//GEN-BEGIN:variables
+    // Variables declaration - do not modify                     
     private com.toedter.calendar.JDateChooser CaducidadDate;
-    private javax.swing.JTextField CategoriaTxt;
-    private javax.swing.JTextField MarcaTxt;
     private javax.swing.JTable TablaProductos;
     private javax.swing.JPanel bg;
     private javax.swing.JButton btnActualizar;
@@ -609,6 +718,8 @@ public class FrmProductos extends javax.swing.JFrame {
     private javax.swing.JButton btnLimpiar;
     private javax.swing.JButton btnRegresar;
     private javax.swing.JTextField cantidadTxt;
+    private javax.swing.JComboBox<String> comboCategorias;
+    private javax.swing.JComboBox<String> comboMarcas;
     private javax.swing.JTextField estadoTxt;
     private javax.swing.JTextField idTxt;
     private javax.swing.JLabel jLabel1;
@@ -623,5 +734,5 @@ public class FrmProductos extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTextField nombreTxt;
     private javax.swing.JTextField valorTxt;
-    // End of variables declaration//GEN-END:variables
+    // End of variables declaration                   
 }
